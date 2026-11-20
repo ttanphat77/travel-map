@@ -1,0 +1,176 @@
+{
+  "source": "thanglequoc/vietnamese-provinces-database commit 8b78ba5, dataset-generation-scripts/bando_co_dvch.sql (sapnhap.bando.com.vn)",
+  "count": 34,
+  "data": [
+    {
+      "bandoId": "33",
+      "name": "Thành Phố Cần Thơ",
+      "beforeMerger": "thành phố Cần Thơ, tỉnh Sóc Trăng và tỉnh Hậu Giang"
+    },
+    {
+      "bandoId": "21",
+      "name": "Thành Phố Đà Nẵng",
+      "beforeMerger": "thành phố Đà Nẵng và tỉnh Quảng Nam"
+    },
+    {
+      "bandoId": "4",
+      "name": "Thành Phố Hải Phòng",
+      "beforeMerger": "thành phố Hải Phòng và tỉnh Hải Dương"
+    },
+    {
+      "bandoId": "29",
+      "name": "Thành Phố Hồ Chí Minh",
+      "beforeMerger": "TPHCM, tỉnh Bà Rịa - Vũng Tàu và tỉnh Bình Dương"
+    },
+    {
+      "bandoId": "20",
+      "name": "Thành Phố Huế",
+      "beforeMerger": "giữ nguyên"
+    },
+    {
+      "bandoId": "1",
+      "name": "Thủ Đô Hà Nội",
+      "beforeMerger": "giữ nguyên"
+    },
+    {
+      "bandoId": "32",
+      "name": "Tỉnh An Giang",
+      "beforeMerger": "tỉnh Kiên Giang và tỉnh An Giang"
+    },
+    {
+      "bandoId": "2",
+      "name": "Tỉnh Bắc Ninh",
+      "beforeMerger": "tỉnh Bắc Giang và tỉnh Bắc Ninh"
+    },
+    {
+      "bandoId": "34",
+      "name": "Tỉnh Cà Mau",
+      "beforeMerger": "tỉnh Bạc Liêu và tỉnh Cà Mau"
+    },
+    {
+      "bandoId": "7",
+      "name": "Tỉnh Cao Bằng",
+      "beforeMerger": "giữ nguyên"
+    },
+    {
+      "bandoId": "25",
+      "name": "Tỉnh Đắk Lắk",
+      "beforeMerger": "tỉnh Phú Yên và tỉnh Đắk Lắk"
+    },
+    {
+      "bandoId": "13",
+      "name": "Tỉnh Điện Biên",
+      "beforeMerger": "giữ nguyên"
+    },
+    {
+      "bandoId": "28",
+      "name": "Tỉnh Đồng Nai",
+      "beforeMerger": "tỉnh Bình Phước và tỉnh Đồng Nai"
+    },
+    {
+      "bandoId": "31",
+      "name": "Tỉnh Đồng Tháp",
+      "beforeMerger": "tỉnh Tiền Giang và tỉnh Đồng Tháp"
+    },
+    {
+      "bandoId": "24",
+      "name": "Tỉnh Gia Lai",
+      "beforeMerger": "tỉnh Bình Định và tỉnh Gia Lai"
+    },
+    {
+      "bandoId": "18",
+      "name": "Tỉnh Hà Tĩnh",
+      "beforeMerger": "giữ nguyên"
+    },
+    {
+      "bandoId": "5",
+      "name": "Tỉnh Hưng Yên",
+      "beforeMerger": "tỉnh Thái Bình và tỉnh Hưng Yên"
+    },
+    {
+      "bandoId": "23",
+      "name": "Tỉnh Khánh Hòa",
+      "beforeMerger": "tỉnh Ninh Thuận và tỉnh Khánh Hòa"
+    },
+    {
+      "bandoId": "14",
+      "name": "Tỉnh Lai Châu",
+      "beforeMerger": "giữ nguyên"
+    },
+    {
+      "bandoId": "26",
+      "name": "Tỉnh Lâm Đồng",
+      "beforeMerger": "tỉnh Đắk Nông, tỉnh Bình Thuận và tỉnh Lâm Đồng"
+    },
+    {
+      "bandoId": "11",
+      "name": "Tỉnh Lạng Sơn",
+      "beforeMerger": "giữ nguyên"
+    },
+    {
+      "bandoId": "9",
+      "name": "Tỉnh Lào Cai",
+      "beforeMerger": "tỉnh Yên Bái và tỉnh Lào Cai"
+    },
+    {
+      "bandoId": "17",
+      "name": "Tỉnh Nghệ An",
+      "beforeMerger": "giữ nguyên"
+    },
+    {
+      "bandoId": "6",
+      "name": "Tỉnh Ninh Bình",
+      "beforeMerger": "tỉnh Hà Nam, tỉnh Nam Định và tỉnh Ninh Bình"
+    },
+    {
+      "bandoId": "12",
+      "name": "Tỉnh Phú Thọ",
+      "beforeMerger": "tỉnh Vĩnh Phúc, tỉnh Hòa Bình và tỉnh Phú Thọ"
+    },
+    {
+      "bandoId": "22",
+      "name": "Tỉnh Quảng Ngãi",
+      "beforeMerger": "tỉnh Kon Tum và tỉnh Quảng Ngãi"
+    },
+    {
+      "bandoId": "3",
+      "name": "Tỉnh Quảng Ninh",
+      "beforeMerger": "giữ nguyên"
+    },
+    {
+      "bandoId": "19",
+      "name": "Tỉnh Quảng Trị",
+      "beforeMerger": "tỉnh Quảng Bình và tỉnh Quảng Trị"
+    },
+    {
+      "bandoId": "15",
+      "name": "Tỉnh Sơn La",
+      "beforeMerger": "giữ nguyên"
+    },
+    {
+      "bandoId": "27",
+      "name": "Tỉnh Tây Ninh",
+      "beforeMerger": "tỉnh Long An và tỉnh Tây Ninh"
+    },
+    {
+      "bandoId": "10",
+      "name": "Tỉnh Thái Nguyên",
+      "beforeMerger": "tỉnh Bắc Kạn và tỉnh Thái Nguyên"
+    },
+    {
+      "bandoId": "16",
+      "name": "Tỉnh Thanh Hóa",
+      "beforeMerger": "giữ nguyên"
+    },
+    {
+      "bandoId": "8",
+      "name": "Tỉnh Tuyên Quang",
+      "beforeMerger": "tỉnh Hà Giang và tỉnh Tuyên Quang"
+    },
+    {
+      "bandoId": "30",
+      "name": "Tỉnh Vĩnh Long",
+      "beforeMerger": "tỉnh Bến Tre, tỉnh Trà Vinh và tỉnh Vĩnh Long"
+    }
+  ]
+}

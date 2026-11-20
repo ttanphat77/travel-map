@@ -1,0 +1,9 @@
+{
+  "_ghiChu": "Bảng sửa tên của geoBoundaries sang mã tỉnh cũ. Các tên khác được nối trực tiếp với provinces-34.json.",
+  "aliases": {
+    "Bà Rịa–Vũng Tàu": "77",
+    "Côn Đảo": "77",
+    "Ho Chi Minh": "79",
+    "Thừa Thiên Huế": "46"
+  }
+}

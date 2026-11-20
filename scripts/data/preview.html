@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Xem trước dữ liệu Việt Nam</title>
+    <style>
+      body { margin: 0; font: 13px system-ui, sans-serif; background: #fff; }
+      .legend { padding: 8px 12px; display: flex; gap: 16px; flex-wrap: wrap; }
+      .legend span::before { content: ''; display: inline-block; width: 18px; margin-right: 6px; vertical-align: middle; border-top: 2px solid; }
+      .new::before { border-color: #111 !important; }
+      .raw::before { border-color: #e11d48 !important; }
+      .inner::before { border-color: #2563eb !important; border-top-style: dashed !important; }
+      svg { display: block; width: 100%; height: calc(100vh - 40px); }
+    </style>
+  </head>
+  <body>
+    <div class="legend">
+      <span class="new">Tỉnh mới (34)</span>
+      <span class="raw">Tỉnh cũ gốc geoBoundaries (chưa cắt)</span>
+      <span class="inner">Đường chia tỉnh cũ sau khi cắt</span>
+      <span id="info"></span>
+    </div>
+    <svg id="map"></svg>
+    <script type="module">
+      import { feature } from 'topojson-client';
+
+      const params = new URLSearchParams(location.search);
+      const bbox = (params.get('bbox') ?? '102,8,110,23.5').split(',').map(Number);
+      const [x0, y0, x1, y1] = bbox;
+      const svg = document.getElementById('map');
+      svg.setAttribute('viewBox', `${x0} ${-y1} ${x1 - x0} ${y1 - y0}`);
+      document.getElementById('info').textContent = `Khung: ${bbox.join(', ')}`;
+
+      const pathOf = (geometry) => {
+        const rings = geometry.type === 'Polygon' ? geometry.coordinates
+          : geometry.type === 'MultiPolygon' ? geometry.coordinates.flat()
+          : geometry.type === 'LineString' ? [geometry.coordinates]
+          : geometry.type === 'MultiLineString' ? geometry.coordinates : [];
+        const closed = geometry.type.endsWith('Polygon');
+        return rings.map((r) => 'M' + r.map(([x, y]) => `${x},${-y}`).join('L') + (closed ? 'Z' : '')).join('');
+      };
+      const draw = (geometry, stroke, width, dash = '') => {
+        const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        p.setAttribute('d', pathOf(geometry));
+        p.setAttribute('fill', 'none');
+        p.setAttribute('stroke', stroke);
+        p.setAttribute('stroke-width', width);
+        p.setAttribute('vector-effect', 'non-scaling-stroke');
+        if (dash) p.setAttribute('stroke-dasharray', dash);
+        svg.appendChild(p);
+      };
+
+      const vn = await (await fetch('/public/data/vn.topo.json')).json();
+      const raw = await (await fetch('/scripts/data/.cache/geoBoundaries-VNM-ADM1.geojson')).json();
+      for (const f of feature(vn, vn.objects.provinces).features) draw(f.geometry, '#111', 1.4);
+      for (const f of raw.features) draw(f.geometry, '#e11d48', 1);
+      for (const f of feature(vn, vn.objects.oldBorders).features) draw(f.geometry, '#2563eb', 1.6, '5 4');
+    </script>
+  </body>
+</html>

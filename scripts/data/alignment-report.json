@@ -1,0 +1,140 @@
+[
+  {
+    "code": "08",
+    "name": "Tuyên Quang",
+    "coveragePercent": 96.77,
+    "spillPercent": 2.13
+  },
+  {
+    "code": "15",
+    "name": "Lào Cai",
+    "coveragePercent": 97.92,
+    "spillPercent": 4.15
+  },
+  {
+    "code": "19",
+    "name": "Thái Nguyên",
+    "coveragePercent": 93.51,
+    "spillPercent": 6.02
+  },
+  {
+    "code": "24",
+    "name": "Bắc Ninh",
+    "coveragePercent": 81.54,
+    "spillPercent": 15.32
+  },
+  {
+    "code": "25",
+    "name": "Phú Thọ",
+    "coveragePercent": 92.62,
+    "spillPercent": 14.51
+  },
+  {
+    "code": "31",
+    "name": "Hải Phòng",
+    "coveragePercent": 78.53,
+    "spillPercent": 31.66
+  },
+  {
+    "code": "33",
+    "name": "Hưng Yên",
+    "coveragePercent": 78.94,
+    "spillPercent": 16.86
+  },
+  {
+    "code": "37",
+    "name": "Ninh Bình",
+    "coveragePercent": 92.09,
+    "spillPercent": 13.71
+  },
+  {
+    "code": "44",
+    "name": "Quảng Trị",
+    "coveragePercent": 97.79,
+    "spillPercent": 2.71
+  },
+  {
+    "code": "48",
+    "name": "Đà Nẵng",
+    "coveragePercent": 95.58,
+    "spillPercent": 3.75
+  },
+  {
+    "code": "51",
+    "name": "Quảng Ngãi",
+    "coveragePercent": 95.05,
+    "spillPercent": 4.27
+  },
+  {
+    "code": "52",
+    "name": "Gia Lai",
+    "coveragePercent": 97.85,
+    "spillPercent": 2.63
+  },
+  {
+    "code": "56",
+    "name": "Khánh Hòa",
+    "coveragePercent": 96.56,
+    "spillPercent": 6.37
+  },
+  {
+    "code": "66",
+    "name": "Đắk Lắk",
+    "coveragePercent": 97.07,
+    "spillPercent": 3.3
+  },
+  {
+    "code": "68",
+    "name": "Lâm Đồng",
+    "coveragePercent": 98.38,
+    "spillPercent": 3.8
+  },
+  {
+    "code": "75",
+    "name": "Đồng Nai",
+    "coveragePercent": 97.83,
+    "spillPercent": 5.33
+  },
+  {
+    "code": "79",
+    "name": "Hồ Chí Minh",
+    "coveragePercent": 86.08,
+    "spillPercent": 7.42
+  },
+  {
+    "code": "80",
+    "name": "Tây Ninh",
+    "coveragePercent": 95.8,
+    "spillPercent": 6.19
+  },
+  {
+    "code": "82",
+    "name": "Đồng Tháp",
+    "coveragePercent": 89.75,
+    "spillPercent": 3.6
+  },
+  {
+    "code": "86",
+    "name": "Vĩnh Long",
+    "coveragePercent": 95.61,
+    "spillPercent": 2.81
+  },
+  {
+    "code": "91",
+    "name": "An Giang",
+    "coveragePercent": 93.74,
+    "spillPercent": 4.12
+  },
+  {
+    "code": "92",
+    "name": "Cần Thơ",
+    "coveragePercent": 96.44,
+    "spillPercent": 4.44
+  },
+  {
+    "code": "96",
+    "name": "Cà Mau",
+    "coveragePercent": 97.68,
+    "spillPercent": 5.76
+  }
+]

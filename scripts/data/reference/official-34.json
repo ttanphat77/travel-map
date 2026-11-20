@@ -1,0 +1,210 @@
+{
+  "source": "thanglequoc/vietnamese-provinces-database v5.2.0, oracle_ImportData_vn_units.sql (Quyết định 19/2025/QĐ-TTg và các nghị quyết sau đó)",
+  "count": 34,
+  "data": [
+    {
+      "code": "01",
+      "name": "Hà Nội",
+      "fullName": "Thành phố Hà Nội",
+      "administrativeUnitId": 1
+    },
+    {
+      "code": "04",
+      "name": "Cao Bằng",
+      "fullName": "Tỉnh Cao Bằng",
+      "administrativeUnitId": 2
+    },
+    {
+      "code": "08",
+      "name": "Tuyên Quang",
+      "fullName": "Tỉnh Tuyên Quang",
+      "administrativeUnitId": 2
+    },
+    {
+      "code": "11",
+      "name": "Điện Biên",
+      "fullName": "Tỉnh Điện Biên",
+      "administrativeUnitId": 2
+    },
+    {
+      "code": "12",
+      "name": "Lai Châu",
+      "fullName": "Tỉnh Lai Châu",
+      "administrativeUnitId": 2
+    },
+    {
+      "code": "14",
+      "name": "Sơn La",
+      "fullName": "Tỉnh Sơn La",
+      "administrativeUnitId": 2
+    },
+    {
+      "code": "15",
+      "name": "Lào Cai",
+      "fullName": "Tỉnh Lào Cai",
+      "administrativeUnitId": 2
+    },
+    {
+      "code": "19",
+      "name": "Thái Nguyên",
+      "fullName": "Tỉnh Thái Nguyên",
+      "administrativeUnitId": 2
+    },
+    {
+      "code": "20",
+      "name": "Lạng Sơn",
+      "fullName": "Tỉnh Lạng Sơn",
+      "administrativeUnitId": 2
+    },
+    {
+      "code": "22",
+      "name": "Quảng Ninh",
+      "fullName": "Thành phố Quảng Ninh",
+      "administrativeUnitId": 1
+    },
+    {
+      "code": "24",
+      "name": "Bắc Ninh",
+      "fullName": "Thành phố Bắc Ninh",
+      "administrativeUnitId": 1
+    },
+    {
+      "code": "25",
+      "name": "Phú Thọ",
+      "fullName": "Tỉnh Phú Thọ",
+      "administrativeUnitId": 2
+    },
+    {
+      "code": "31",
+      "name": "Hải Phòng",
+      "fullName": "Thành phố Hải Phòng",
+      "administrativeUnitId": 1
+    },
+    {
+      "code": "33",
+      "name": "Hưng Yên",
+      "fullName": "Tỉnh Hưng Yên",
+      "administrativeUnitId": 2
+    },
+    {
+      "code": "37",
+      "name": "Ninh Bình",
+      "fullName": "Tỉnh Ninh Bình",
+      "administrativeUnitId": 2
+    },
+    {
+      "code": "38",
+      "name": "Thanh Hoá",
+      "fullName": "Tỉnh Thanh Hoá",
+      "administrativeUnitId": 2
+    },
+    {
+      "code": "40",
+      "name": "Nghệ An",
+      "fullName": "Tỉnh Nghệ An",
+      "administrativeUnitId": 2
+    },
+    {
+      "code": "42",
+      "name": "Hà Tĩnh",
+      "fullName": "Tỉnh Hà Tĩnh",
+      "administrativeUnitId": 2
+    },
+    {
+      "code": "44",
+      "name": "Quảng Trị",
+      "fullName": "Tỉnh Quảng Trị",
+      "administrativeUnitId": 2
+    },
+    {
+      "code": "46",
+      "name": "Huế",
+      "fullName": "Thành phố Huế",
+      "administrativeUnitId": 1
+    },
+    {
+      "code": "48",
+      "name": "Đà Nẵng",
+      "fullName": "Thành phố Đà Nẵng",
+      "administrativeUnitId": 1
+    },
+    {
+      "code": "51",
+      "name": "Quảng Ngãi",
+      "fullName": "Tỉnh Quảng Ngãi",
+      "administrativeUnitId": 2
+    },
+    {
+      "code": "52",
+      "name": "Gia Lai",
+      "fullName": "Tỉnh Gia Lai",
+      "administrativeUnitId": 2
+    },
+    {
+      "code": "56",
+      "name": "Khánh Hoà",
+      "fullName": "Tỉnh Khánh Hoà",
+      "administrativeUnitId": 2
+    },
+    {
+      "code": "66",
+      "name": "Đắk Lắk",
+      "fullName": "Tỉnh Đắk Lắk",
+      "administrativeUnitId": 2
+    },
+    {
+      "code": "68",
+      "name": "Lâm Đồng",
+      "fullName": "Tỉnh Lâm Đồng",
+      "administrativeUnitId": 2
+    },
+    {
+      "code": "75",
+      "name": "Đồng Nai",
+      "fullName": "Thành phố Đồng Nai",
+      "administrativeUnitId": 1
+    },
+    {
+      "code": "79",
+      "name": "Hồ Chí Minh",
+      "fullName": "Thành phố Hồ Chí Minh",
+      "administrativeUnitId": 1
+    },
+    {
+      "code": "80",
+      "name": "Tây Ninh",
+      "fullName": "Tỉnh Tây Ninh",
+      "administrativeUnitId": 2
+    },
+    {
+      "code": "82",
+      "name": "Đồng Tháp",
+      "fullName": "Tỉnh Đồng Tháp",
+      "administrativeUnitId": 2
+    },
+    {
+      "code": "86",
+      "name": "Vĩnh Long",
+      "fullName": "Tỉnh Vĩnh Long",
+      "administrativeUnitId": 2
+    },
+    {
+      "code": "91",
+      "name": "An Giang",
+      "fullName": "Tỉnh An Giang",
+      "administrativeUnitId": 2
+    },
+    {
+      "code": "92",
+      "name": "Cần Thơ",
+      "fullName": "Thành phố Cần Thơ",
+      "administrativeUnitId": 1
+    },
+    {
+      "code": "96",
+      "name": "Cà Mau",
+      "fullName": "Tỉnh Cà Mau",
+      "administrativeUnitId": 2
+    }
+  ]
+}

@@ -1,0 +1,99 @@
+[
+  { "code": "01", "name": "Hà Nội", "kind": "thanh-pho", "bandoId": "1", "oldProvinces": [
+    { "oldCode": "01", "name": "Hà Nội", "kind": "thanh-pho" } ] },
+  { "code": "04", "name": "Cao Bằng", "kind": "tinh", "bandoId": "7", "oldProvinces": [
+    { "oldCode": "04", "name": "Cao Bằng", "kind": "tinh" } ] },
+  { "code": "08", "name": "Tuyên Quang", "kind": "tinh", "bandoId": "8", "oldProvinces": [
+    { "oldCode": "02", "name": "Hà Giang", "kind": "tinh" },
+    { "oldCode": "08", "name": "Tuyên Quang", "kind": "tinh" } ] },
+  { "code": "11", "name": "Điện Biên", "kind": "tinh", "bandoId": "13", "oldProvinces": [
+    { "oldCode": "11", "name": "Điện Biên", "kind": "tinh" } ] },
+  { "code": "12", "name": "Lai Châu", "kind": "tinh", "bandoId": "14", "oldProvinces": [
+    { "oldCode": "12", "name": "Lai Châu", "kind": "tinh" } ] },
+  { "code": "14", "name": "Sơn La", "kind": "tinh", "bandoId": "15", "oldProvinces": [
+    { "oldCode": "14", "name": "Sơn La", "kind": "tinh" } ] },
+  { "code": "15", "name": "Lào Cai", "kind": "tinh", "bandoId": "9", "oldProvinces": [
+    { "oldCode": "10", "name": "Lào Cai", "kind": "tinh" },
+    { "oldCode": "15", "name": "Yên Bái", "kind": "tinh" } ] },
+  { "code": "19", "name": "Thái Nguyên", "kind": "tinh", "bandoId": "10", "oldProvinces": [
+    { "oldCode": "06", "name": "Bắc Kạn", "kind": "tinh" },
+    { "oldCode": "19", "name": "Thái Nguyên", "kind": "tinh" } ] },
+  { "code": "20", "name": "Lạng Sơn", "kind": "tinh", "bandoId": "11", "oldProvinces": [
+    { "oldCode": "20", "name": "Lạng Sơn", "kind": "tinh" } ] },
+  { "code": "22", "name": "Quảng Ninh", "kind": "thanh-pho", "bandoId": "3", "oldProvinces": [
+    { "oldCode": "22", "name": "Quảng Ninh", "kind": "tinh" } ] },
+  { "code": "24", "name": "Bắc Ninh", "kind": "thanh-pho", "bandoId": "2", "oldProvinces": [
+    { "oldCode": "24", "name": "Bắc Giang", "kind": "tinh" },
+    { "oldCode": "27", "name": "Bắc Ninh", "kind": "tinh" } ] },
+  { "code": "25", "name": "Phú Thọ", "kind": "tinh", "bandoId": "12", "oldProvinces": [
+    { "oldCode": "17", "name": "Hòa Bình", "kind": "tinh" },
+    { "oldCode": "25", "name": "Phú Thọ", "kind": "tinh" },
+    { "oldCode": "26", "name": "Vĩnh Phúc", "kind": "tinh" } ] },
+  { "code": "31", "name": "Hải Phòng", "kind": "thanh-pho", "bandoId": "4", "oldProvinces": [
+    { "oldCode": "30", "name": "Hải Dương", "kind": "tinh" },
+    { "oldCode": "31", "name": "Hải Phòng", "kind": "thanh-pho" } ] },
+  { "code": "33", "name": "Hưng Yên", "kind": "tinh", "bandoId": "5", "oldProvinces": [
+    { "oldCode": "33", "name": "Hưng Yên", "kind": "tinh" },
+    { "oldCode": "34", "name": "Thái Bình", "kind": "tinh" } ] },
+  { "code": "37", "name": "Ninh Bình", "kind": "tinh", "bandoId": "6", "oldProvinces": [
+    { "oldCode": "35", "name": "Hà Nam", "kind": "tinh" },
+    { "oldCode": "36", "name": "Nam Định", "kind": "tinh" },
+    { "oldCode": "37", "name": "Ninh Bình", "kind": "tinh" } ] },
+  { "code": "38", "name": "Thanh Hóa", "kind": "tinh", "bandoId": "16", "oldProvinces": [
+    { "oldCode": "38", "name": "Thanh Hóa", "kind": "tinh" } ] },
+  { "code": "40", "name": "Nghệ An", "kind": "tinh", "bandoId": "17", "oldProvinces": [
+    { "oldCode": "40", "name": "Nghệ An", "kind": "tinh" } ] },
+  { "code": "42", "name": "Hà Tĩnh", "kind": "tinh", "bandoId": "18", "oldProvinces": [
+    { "oldCode": "42", "name": "Hà Tĩnh", "kind": "tinh" } ] },
+  { "code": "44", "name": "Quảng Trị", "kind": "tinh", "bandoId": "19", "oldProvinces": [
+    { "oldCode": "44", "name": "Quảng Bình", "kind": "tinh" },
+    { "oldCode": "45", "name": "Quảng Trị", "kind": "tinh" } ] },
+  { "code": "46", "name": "Huế", "kind": "thanh-pho", "bandoId": "20", "oldProvinces": [
+    { "oldCode": "46", "name": "Huế", "kind": "thanh-pho" } ] },
+  { "code": "48", "name": "Đà Nẵng", "kind": "thanh-pho", "bandoId": "21", "oldProvinces": [
+    { "oldCode": "48", "name": "Đà Nẵng", "kind": "thanh-pho" },
+    { "oldCode": "49", "name": "Quảng Nam", "kind": "tinh" } ] },
+  { "code": "51", "name": "Quảng Ngãi", "kind": "tinh", "bandoId": "22", "oldProvinces": [
+    { "oldCode": "51", "name": "Quảng Ngãi", "kind": "tinh" },
+    { "oldCode": "62", "name": "Kon Tum", "kind": "tinh" } ] },
+  { "code": "52", "name": "Gia Lai", "kind": "tinh", "bandoId": "24", "oldProvinces": [
+    { "oldCode": "52", "name": "Bình Định", "kind": "tinh" },
+    { "oldCode": "64", "name": "Gia Lai", "kind": "tinh" } ] },
+  { "code": "56", "name": "Khánh Hòa", "kind": "tinh", "bandoId": "23", "oldProvinces": [
+    { "oldCode": "56", "name": "Khánh Hòa", "kind": "tinh" },
+    { "oldCode": "58", "name": "Ninh Thuận", "kind": "tinh" } ] },
+  { "code": "66", "name": "Đắk Lắk", "kind": "tinh", "bandoId": "25", "oldProvinces": [
+    { "oldCode": "54", "name": "Phú Yên", "kind": "tinh" },
+    { "oldCode": "66", "name": "Đắk Lắk", "kind": "tinh" } ] },
+  { "code": "68", "name": "Lâm Đồng", "kind": "tinh", "bandoId": "26", "oldProvinces": [
+    { "oldCode": "60", "name": "Bình Thuận", "kind": "tinh" },
+    { "oldCode": "67", "name": "Đắk Nông", "kind": "tinh" },
+    { "oldCode": "68", "name": "Lâm Đồng", "kind": "tinh" } ] },
+  { "code": "75", "name": "Đồng Nai", "kind": "thanh-pho", "bandoId": "28", "oldProvinces": [
+    { "oldCode": "70", "name": "Bình Phước", "kind": "tinh" },
+    { "oldCode": "75", "name": "Đồng Nai", "kind": "tinh" } ] },
+  { "code": "79", "name": "Hồ Chí Minh", "kind": "thanh-pho", "bandoId": "29", "oldProvinces": [
+    { "oldCode": "74", "name": "Bình Dương", "kind": "tinh" },
+    { "oldCode": "77", "name": "Bà Rịa - Vũng Tàu", "kind": "tinh" },
+    { "oldCode": "79", "name": "Hồ Chí Minh", "kind": "thanh-pho" } ] },
+  { "code": "80", "name": "Tây Ninh", "kind": "tinh", "bandoId": "27", "oldProvinces": [
+    { "oldCode": "72", "name": "Tây Ninh", "kind": "tinh" },
+    { "oldCode": "80", "name": "Long An", "kind": "tinh" } ] },
+  { "code": "82", "name": "Đồng Tháp", "kind": "tinh", "bandoId": "31", "oldProvinces": [
+    { "oldCode": "82", "name": "Tiền Giang", "kind": "tinh" },
+    { "oldCode": "87", "name": "Đồng Tháp", "kind": "tinh" } ] },
+  { "code": "86", "name": "Vĩnh Long", "kind": "tinh", "bandoId": "30", "oldProvinces": [
+    { "oldCode": "83", "name": "Bến Tre", "kind": "tinh" },
+    { "oldCode": "84", "name": "Trà Vinh", "kind": "tinh" },
+    { "oldCode": "86", "name": "Vĩnh Long", "kind": "tinh" } ] },
+  { "code": "91", "name": "An Giang", "kind": "tinh", "bandoId": "32", "oldProvinces": [
+    { "oldCode": "89", "name": "An Giang", "kind": "tinh" },
+    { "oldCode": "91", "name": "Kiên Giang", "kind": "tinh" } ] },
+  { "code": "92", "name": "Cần Thơ", "kind": "thanh-pho", "bandoId": "33", "oldProvinces": [
+    { "oldCode": "92", "name": "Cần Thơ", "kind": "thanh-pho" },
+    { "oldCode": "93", "name": "Hậu Giang", "kind": "tinh" },
+    { "oldCode": "94", "name": "Sóc Trăng", "kind": "tinh" } ] },
+  { "code": "96", "name": "Cà Mau", "kind": "tinh", "bandoId": "34", "oldProvinces": [
+    { "oldCode": "95", "name": "Bạc Liêu", "kind": "tinh" },
+    { "oldCode": "96", "name": "Cà Mau", "kind": "tinh" } ] }
+]

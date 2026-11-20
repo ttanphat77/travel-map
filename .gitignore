@@ -1,0 +1,14 @@
+# Gói cài đặt và file build
+node_modules/
+dist/
+
+# Dữ liệu nguồn đã tải về bởi script dữ liệu (tải lại được bằng "npm run data")
+scripts/data/.cache/
+
+# Dữ liệu người dùng do server ghi ra. Dấu "/" ở đầu để chỉ chặn thư mục data ở gốc dự án.
+/data/
+
+# File tạm của TypeScript và hệ điều hành
+*.tsbuildinfo
+.DS_Store
+Thumbs.db
