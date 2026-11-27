@@ -1,25 +1,76 @@
+/* =========================================================================
+   Bộ thiết kế: các biến dùng chung cho màu, chữ, khoảng cách, bo góc và bóng.
+   Component chỉ dùng biến, không viết mã màu trực tiếp.
+   ========================================================================= */
 :root {
-  --color-text: #1f2328;
-  --color-text-muted: #59636e;
-  --color-bg: #ffffff;
-  --color-surface: #f6f8fa;
-  --color-border: #d1d9e0;
+  --font-sans: var(--font-app), system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  /* Màu trung tính */
+  --color-text: #111827;
+  --color-text-secondary: #4b5563;
+  --color-text-muted: #6b7280;
+  --color-surface: #ffffff;
+  --color-surface-subtle: #f7f8fa;
+  --color-surface-sunken: #eef0f3;
+  --color-border: #e2e5ea;
+  --color-border-strong: #cbd0d8;
+  --color-map-bg: #e8eef3;
+
+  /* Màu nhấn: nút chính, vùng đang chọn, đường dẫn */
   --color-accent: #2563eb;
+  --color-accent-hover: #1d4ed8;
+  --color-accent-soft: #eaf1fe;
+  --color-on-accent: #ffffff;
 
+  /* Màu trạng thái. Phải khớp với COLORS trong src/map/styles.ts. */
   --color-visited: #3fa36b;
-  --color-visited-stroke: #2f7d52;
+  --color-visited-strong: #2f7d52;
+  --color-visited-soft: #e3f3e9;
+  --color-visited-text: #1f5c3b;
   --color-wishlist: #f0a33a;
-  --color-wishlist-stroke: #b87717;
-  --color-unmarked-stroke: #8a8f98;
-  --color-old-border: #6b7280;
+  --color-wishlist-strong: #b87717;
+  --color-wishlist-soft: #fdf0dc;
+  --color-wishlist-text: #7a4d0c;
+  --color-danger: #b42318;
+  --color-danger-soft: #fef3f2;
+  --color-danger-border: #fda29b;
 
-  --radius: 8px;
-  --topbar-height: 56px;
-  --side-panel-width: 300px;
+  /* Khoảng cách theo bước 4 px */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
 
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  /* Cỡ chữ */
+  --text-xs: 11px;
+  --text-sm: 12px;
+  --text-md: 13px;
+  --text-base: 14px;
+  --text-lg: 16px;
+  --text-xl: 20px;
+
+  /* Bo góc */
+  --radius-sm: 6px;
+  --radius: 10px;
+  --radius-lg: 14px;
+  --radius-pill: 999px;
+
+  /* Bóng cho các lớp nổi trên bản đồ */
+  --shadow-sm: 0 1px 2px rgba(17, 24, 39, 0.08);
+  --shadow-md: 0 4px 12px rgba(17, 24, 39, 0.12), 0 1px 3px rgba(17, 24, 39, 0.08);
+  --shadow-lg: 0 12px 32px rgba(17, 24, 39, 0.18), 0 2px 6px rgba(17, 24, 39, 0.08);
+
+  /* Bố cục */
+  --panel-width: 360px;
+  --overlay-gap: 12px;
+  --control-height: 36px;
+
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
   color: var(--color-text);
-  background: var(--color-bg);
+  background: var(--color-map-bg);
 }
 
 *,
@@ -28,87 +79,949 @@
   box-sizing: border-box;
 }
 
-html,
-body,
-#root {
-  height: 100%;
-  margin: 0;
-}
-
 /* App chiếm trọn màn hình. Trang không được cuộn, kể cả khi trình duyệt đưa một ô nhập vào tầm nhìn. */
 html,
 body {
+  height: 100%;
+  margin: 0;
   overflow: hidden;
 }
 
-.app {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
+button,
+input,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
 }
 
-.top-bar {
-  flex: 0 0 var(--topbar-height);
-  display: flex;
-  align-items: center;
-  padding: 0 16px;
-  border-bottom: 1px solid var(--color-border);
-  background: var(--color-bg);
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
 }
 
-.app-title {
-  font-weight: 600;
-  font-size: 16px;
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
   white-space: nowrap;
 }
 
-.top-bar {
-  gap: 12px;
+/* =========================================================================
+   Bố cục: bản đồ toàn màn hình, các lớp nổi đặt đè lên bản đồ.
+   ========================================================================= */
+.app {
   position: relative;
-  z-index: 1100;
+  height: 100%;
 }
 
-.search-box {
-  position: relative;
+/* MapLibre gán position: relative cho khung bản đồ, nên quy tắc này cần độ ưu tiên cao hơn để khung phủ kín màn hình. */
+.map-shell,
+.map-shell > .map-view.maplibregl-map,
+.map-shell > .map-view {
+  position: absolute;
+  inset: 0;
+}
+
+.map-view {
+  background: var(--color-map-bg);
+}
+
+.map-shell.is-placing .maplibregl-canvas {
+  cursor: crosshair;
+}
+
+.app-message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-6);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-md);
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+
+.app-message p {
+  margin: 0;
+}
+
+/* =========================================================================
+   Nút
+   ========================================================================= */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  height: var(--control-height);
+  padding: 0 var(--space-4);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  font-size: var(--text-base);
+  font-weight: 500;
+  color: var(--color-text);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.button:hover {
+  background: var(--color-surface-subtle);
+}
+
+.button-primary {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+.button-primary:hover {
+  border-color: var(--color-accent-hover);
+  background: var(--color-accent-hover);
+}
+
+.button-danger {
+  color: var(--color-danger);
+}
+
+.button-danger:hover {
+  background: var(--color-danger-soft);
+}
+
+.button-small {
+  height: 30px;
+  padding: 0 var(--space-3);
+  font-size: var(--text-md);
+}
+
+.icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--control-height);
+  height: var(--control-height);
+  flex: 0 0 auto;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+
+.icon-button:hover {
+  background: var(--color-surface-sunken);
+  color: var(--color-text);
+}
+
+.link-button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-accent);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.link-button:hover {
+  text-decoration: underline;
+}
+
+a {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* =========================================================================
+   Khung nổi bên trái
+   ========================================================================= */
+.panel {
+  position: absolute;
+  z-index: 1000;
+  top: var(--overlay-gap);
+  left: var(--overlay-gap);
+  bottom: var(--overlay-gap);
+  width: var(--panel-width);
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+/* Khi thu gọn, khung chỉ còn hàng tìm kiếm để bản đồ rộng hơn. */
+.panel.is-collapsed {
+  bottom: auto;
+  overflow: visible;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-2);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.panel.is-collapsed .panel-header {
+  border-bottom: 0;
+}
+
+.panel-content {
   flex: 1 1 auto;
-  max-width: 420px;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* Thẻ Địa điểm và Vùng */
+.tabs {
+  display: flex;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-3) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  font-size: var(--text-base);
+  font-weight: 500;
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+.tab.is-active {
+  border-bottom-color: var(--color-accent);
+  color: var(--color-text);
+}
+
+.tab-count {
+  min-width: 20px;
+  padding: 0 6px;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-sunken);
+  font-size: var(--text-xs);
+  line-height: 18px;
+  color: var(--color-text-secondary);
+}
+
+/* Danh sách */
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.list-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  min-width: 0;
+  padding: 10px var(--space-4);
+  border: 0;
+  border-bottom: 1px solid var(--color-surface-sunken);
+  background: transparent;
+  text-align: left;
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.list-item:hover {
+  background: var(--color-surface-subtle);
+}
+
+.list-item:focus-visible {
+  outline-offset: -2px;
+}
+
+.list-item-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
+  border-radius: var(--radius-sm);
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+}
+
+.list-item-icon.is-visited {
+  background: var(--color-visited-soft);
+  color: var(--color-visited-strong);
+}
+
+.list-item-icon.is-wishlist {
+  background: var(--color-wishlist-soft);
+  color: var(--color-wishlist-strong);
+}
+
+.list-item-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1 1 auto;
   min-width: 0;
 }
 
-.search-input {
-  font: inherit;
-  width: 100%;
-  padding: 6px 10px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
+.list-item-title {
+  font-size: var(--text-base);
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.search-input:focus-visible,
-.search-result:focus-visible {
+.list-item-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.list-item-end {
+  flex: 0 0 auto;
+  color: var(--color-text-muted);
+}
+
+.list-group-title {
+  margin: 0;
+  padding: var(--space-4) var(--space-4) var(--space-1);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+/* Trạng thái rỗng */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-6) var(--space-5);
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+.empty-state-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-sunken);
+  color: var(--color-text-secondary);
+}
+
+.empty-state-title {
+  margin: 0;
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.empty-state p {
+  margin: 0;
+  font-size: var(--text-md);
+}
+
+/* =========================================================================
+   Trang thông tin của vùng hoặc ghim
+   ========================================================================= */
+.info-hero {
+  display: block;
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  background: var(--color-surface-sunken);
+}
+
+.info-hero.is-skeleton {
+  height: 160px;
+}
+
+.info-head {
+  padding: var(--space-4) var(--space-4) 0;
+}
+
+.info-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  font-size: var(--text-xl);
+  font-weight: 600;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.info-flag {
+  height: 20px;
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+}
+
+.info-subtitle {
+  margin: var(--space-1) 0 0;
+  font-size: var(--text-md);
+  color: var(--color-text-muted);
+}
+
+.info-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-4);
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.section-note {
+  margin: var(--space-2) 0 0;
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.section .list {
+  margin: 0 calc(-1 * var(--space-4));
+}
+
+.info-extract {
+  margin: 0;
+  font-size: var(--text-md);
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.info-extract.is-expanded {
+  display: block;
+}
+
+.info-actions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.info-actions .button {
+  flex: 1 1 0;
+}
+
+.info-text {
+  margin: 0;
+  font-size: var(--text-md);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.muted {
+  color: var(--color-text-muted);
+}
+
+/* Ô số liệu */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
+.stat {
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius);
+  background: var(--color-surface-subtle);
+  border: 1px solid var(--color-surface-sunken);
+}
+
+.stat-label {
+  display: block;
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.stat-value {
+  display: block;
+  margin-top: 2px;
+  font-size: var(--text-base);
+  font-weight: 600;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+/* Danh sách chi tiết: biểu tượng, nhãn và giá trị */
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+}
+
+.detail {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 104px) minmax(0, 1fr);
+  align-items: start;
+  gap: var(--space-2);
+  font-size: var(--text-md);
+}
+
+.detail-icon {
+  margin-top: 1px;
+  color: var(--color-text-muted);
+}
+
+.detail dt {
+  color: var(--color-text-muted);
+}
+
+.detail dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Nhãn trạng thái */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 8px;
+  border-radius: var(--radius-pill);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  line-height: 18px;
+  background: var(--color-surface-sunken);
+  color: var(--color-text-secondary);
+}
+
+.badge.is-visited {
+  background: var(--color-visited-soft);
+  color: var(--color-visited-text);
+}
+
+.badge.is-wishlist {
+  background: var(--color-wishlist-soft);
+  color: var(--color-wishlist-text);
+}
+
+/* Nút chọn trạng thái hai lựa chọn liền nhau */
+.segmented {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  padding: 4px;
+  border-radius: var(--radius);
+  background: var(--color-surface-sunken);
+}
+
+.segmented-option {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 32px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  font-size: var(--text-base);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+
+.segmented-option:hover {
+  color: var(--color-text);
+}
+
+.segmented-option.is-visited.is-active {
+  border-color: var(--color-visited);
+  background: var(--color-surface);
+  color: var(--color-visited-text);
+  box-shadow: var(--shadow-sm);
+}
+
+.segmented-option.is-wishlist.is-active {
+  border-color: var(--color-wishlist);
+  background: var(--color-surface);
+  color: var(--color-wishlist-text);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Ô nhập */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+/* Ô đánh dấu có nhãn nằm cùng hàng, ví dụ ô "Đây là quê nhà" trong form ghim. */
+.check-field {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+
+.check-field input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: var(--color-accent);
+}
+
+.input {
+  width: 100%;
+  min-height: var(--control-height);
+  padding: 6px 10px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  font-size: var(--text-base);
+}
+
+.input:hover {
+  border-color: var(--color-text-muted);
+}
+
+.input:focus-visible {
   outline: 2px solid var(--color-accent);
-  outline-offset: 1px;
+  outline-offset: 0;
+  border-color: var(--color-accent);
+}
+
+textarea.input {
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-3);
+}
+
+.field-error {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-danger);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-4);
+}
+
+.form-title {
+  margin: 0;
+  font-size: var(--text-xl);
+  font-weight: 600;
+}
+
+.form-hint {
+  margin: -8px 0 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}
+
+/* Nhãn loại ghim */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  padding: 1px 8px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-subtle);
+  font-size: var(--text-sm);
+  line-height: 18px;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+.chip svg {
+  flex: 0 0 auto;
+  color: var(--color-text-muted);
+}
+
+.chip-button {
+  cursor: pointer;
+}
+
+.chip-button:hover {
+  border-color: var(--color-border-strong);
+  color: var(--color-text);
+}
+
+.chip-button.is-active {
+  border-color: var(--color-accent);
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+}
+
+.chip-button.is-active svg {
+  color: var(--color-accent);
+}
+
+.chip-count {
+  margin-left: 2px;
+  color: var(--color-text-muted);
+}
+
+.info-category {
+  margin: var(--space-2) 0 0;
+}
+
+/* Hàng lọc theo loại ở đầu danh sách ghim */
+.category-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-surface-sunken);
+}
+
+.list-note {
+  padding: var(--space-3) var(--space-4) 0;
+}
+
+/* Ô chọn loại ghim: lưới biểu tượng, mỗi ghim chọn một loại. */
+.category-picker {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.category-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  min-height: 52px;
+  padding: 6px 2px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  font-size: var(--text-xs);
+  line-height: 1.2;
+  color: var(--color-text-secondary);
+  text-align: center;
+  cursor: pointer;
+}
+
+.category-option svg {
+  color: var(--color-text-muted);
+}
+
+.category-option:hover {
+  border-color: var(--color-border-strong);
+  color: var(--color-text);
+}
+
+.category-option.is-active {
+  border-color: var(--color-accent);
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+.category-option.is-active svg {
+  color: var(--color-accent);
+}
+
+/* Dòng cho biết loại sẽ lưu khi lưu nhanh một địa điểm của bản đồ nền */
+.category-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+/* Điểm đến gợi ý */
+.attraction {
+  display: flex;
+  align-items: center;
+}
+
+.attraction .list-item {
+  flex: 1 1 auto;
+  border-bottom: 0;
+}
+
+.attraction-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  margin-right: var(--space-2);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+}
+
+.attraction-link:hover {
+  background: var(--color-surface-sunken);
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+.attraction + .attraction {
+  border-top: 1px solid var(--color-surface-sunken);
+}
+
+/* Khung xám nhấp nháy khi đang tải */
+.skeleton {
+  display: block;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(90deg, var(--color-surface-sunken) 0%, var(--color-surface-subtle) 50%, var(--color-surface-sunken) 100%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.2s ease-in-out infinite;
+}
+
+.skeleton-line {
+  height: 12px;
+  margin: 6px 0;
+}
+
+@keyframes skeleton-shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
+}
+
+.source-note {
+  margin: 0;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-border);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+/* =========================================================================
+   Ô tìm kiếm trong hàng đầu của khung nổi
+   ========================================================================= */
+.search-box {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.search-field {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: var(--control-height);
+  padding: 0 var(--space-3);
+  border-radius: var(--radius);
+  background: var(--color-surface-sunken);
+  color: var(--color-text-muted);
+}
+
+.search-field:focus-within {
+  background: var(--color-surface);
+  box-shadow: inset 0 0 0 2px var(--color-accent);
+}
+
+.search-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  background: transparent;
+  font-size: var(--text-base);
+  color: var(--color-text);
+}
+
+.search-input:focus-visible {
+  outline: none;
 }
 
 .search-panel {
   position: absolute;
-  top: calc(100% + 4px);
+  z-index: 10;
+  top: calc(100% + 6px);
   left: 0;
   right: 0;
-  background: var(--color-bg);
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-md);
   overflow: hidden;
 }
 
 .search-message {
   margin: 0;
-  padding: 10px 12px;
-  font-size: 14px;
+  padding: 10px var(--space-3);
+  font-size: var(--text-md);
 }
 
 .search-error {
-  color: #b42318;
+  color: var(--color-danger);
 }
 
 .search-results {
@@ -120,27 +1033,27 @@ body {
 .search-result {
   display: flex;
   flex-direction: column;
+  gap: 2px;
   width: 100%;
-  padding: 8px 12px;
+  padding: var(--space-2) var(--space-3);
   border: 0;
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-surface-sunken);
   background: transparent;
-  font: inherit;
   text-align: left;
   cursor: pointer;
 }
 
 .search-result:hover {
-  background: var(--color-surface);
+  background: var(--color-surface-subtle);
 }
 
 .search-result-name {
-  font-weight: 600;
-  font-size: 14px;
+  font-size: var(--text-base);
+  font-weight: 500;
 }
 
 .search-result-detail {
-  font-size: 12px;
+  font-size: var(--text-sm);
   color: var(--color-text-muted);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -149,241 +1062,569 @@ body {
 
 .search-note {
   margin: 0;
-  padding: 6px 12px;
-  font-size: 11px;
-  color: var(--color-text-muted);
-  background: var(--color-surface);
-}
-
-.add-place-button {
-  margin-top: 0;
-  white-space: nowrap;
-}
-
-.add-place-button.is-active {
-  background: var(--color-accent);
-  color: #fff;
-}
-
-.map-shell {
-  position: absolute;
-  inset: 0;
-}
-
-.map-shell.is-placing .leaflet-container,
-.map-shell.is-placing .leaflet-interactive {
-  cursor: crosshair !important;
-}
-
-.placing-banner {
-  position: absolute;
-  top: 12px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1000;
-  padding: 8px 14px;
-  border-radius: var(--radius);
-  background: var(--color-accent);
-  color: #fff;
-  font-size: 14px;
-  white-space: nowrap;
-}
-
-.place-pin {
-  background: transparent;
-  border: 0;
-}
-
-.field-error {
-  margin: 2px 0 0;
-  font-size: 12px;
-  color: #b42318;
-}
-
-.form-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-  margin-top: 10px;
-}
-
-.form-actions .primary-button {
-  margin-top: 0;
-}
-
-.status-badge {
-  display: inline-block;
-  padding: 1px 8px;
-  border-radius: 999px;
-  font-size: 12px;
-}
-
-.status-badge.status-visited {
-  background: #dff1e6;
-  color: #1f5c3b;
-}
-
-.status-badge.status-wishlist {
-  background: #fdecd2;
-  color: #7a4d0c;
-}
-
-.detail-muted {
+  padding: 6px var(--space-3);
+  background: var(--color-surface-subtle);
+  font-size: var(--text-xs);
   color: var(--color-text-muted);
 }
 
-.detail-note {
-  white-space: pre-wrap;
-}
-
-.app-main {
-  position: relative;
-  flex: 1 1 auto;
-  min-height: 0;
-}
-
-.map-view {
+/* =========================================================================
+   Các lớp nổi trên bản đồ: bộ lọc, nút zoom, nút thêm ghim, thông báo
+   ========================================================================= */
+.map-filters {
   position: absolute;
-  inset: 0;
-  background: #e8eef3;
-}
-
-.app-message {
-  padding: 24px 16px;
-  text-align: center;
-  color: var(--color-text-muted);
-}
-
-.island-label {
-  white-space: nowrap;
-  font-size: 12px;
-  font-style: italic;
-  color: #1e3a5f;
-  text-shadow: 0 0 3px #fff, 0 0 3px #fff;
-  transform: translate(-50%, -50%);
-  width: auto !important;
-  height: auto !important;
-}
-
-.region-detail {
-  font-size: 13px;
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-}
-
-.detail-title {
-  margin: 0 0 8px;
-  font-size: 15px;
-  font-weight: 600;
-}
-
-.detail-text {
-  margin: 0 0 6px;
-}
-
-.mark-editor {
+  z-index: 900;
+  top: var(--overlay-gap);
+  right: var(--overlay-gap);
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  align-items: flex-end;
+  gap: var(--space-2);
 }
 
-.status-buttons {
+.map-filter-row {
   display: flex;
-  gap: 6px;
-  margin-bottom: 4px;
+  gap: var(--space-2);
 }
 
-.status-button,
-.primary-button {
-  font: inherit;
-  padding: 5px 10px;
-  border-radius: var(--radius);
+/* Dòng báo khi có lớp bị ẩn, để người dùng không nghĩ ghim đã mất. */
+.map-filter-notice {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 4px var(--space-3);
   border: 1px solid var(--color-border);
-  background: var(--color-bg);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+/* Con mắt cho biết nút là nút bật tắt. */
+.filter-eye {
+  color: var(--color-text-muted);
+}
+
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+  font-size: var(--text-md);
+  font-weight: 500;
   color: var(--color-text);
   cursor: pointer;
 }
 
-.status-button:focus-visible,
-.primary-button:focus-visible,
-.toast-action:focus-visible,
-.field-input:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 1px;
+.filter-chip:hover {
+  border-color: var(--color-border-strong);
 }
 
-.status-visited.is-active {
-  background: #dff1e6;
-  border-color: var(--color-visited-stroke);
-  color: #1f5c3b;
+.filter-chip.is-off {
+  background: var(--color-surface-subtle);
+  color: var(--color-text-muted);
 }
 
-.status-wishlist.is-active {
-  background: #fdecd2;
-  border-color: var(--color-wishlist-stroke);
-  color: #7a4d0c;
+.filter-chip.is-off .filter-dot {
+  opacity: 0.35;
 }
 
-.primary-button {
-  margin-top: 4px;
+.filter-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-pill);
+}
+
+.filter-dot.is-visited {
+  background: var(--color-visited);
+}
+
+.filter-dot.is-wishlist {
+  background: var(--color-wishlist);
+}
+
+.filter-count {
+  color: var(--color-text-muted);
+}
+
+/* Nút cho biết bản đồ đang lọc ghim theo loại. Bấm để bỏ lọc. */
+.filter-chip.is-category {
   border-color: var(--color-accent);
+  background: var(--color-accent-soft);
   color: var(--color-accent);
 }
 
-.field-label {
-  margin-top: 4px;
-  font-size: 12px;
-  color: var(--color-text-muted);
+.map-controls {
+  position: absolute;
+  z-index: 900;
+  right: var(--overlay-gap);
+  bottom: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-2);
 }
 
-.field-input {
-  font: inherit;
-  width: 100%;
-  padding: 4px 8px;
-  border: 1px solid var(--color-border);
+.zoom-group {
+  display: flex;
+  flex-direction: column;
   border-radius: var(--radius);
-  resize: vertical;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
 }
 
-.old-provinces {
-  margin-top: 10px;
-  padding-top: 8px;
+.zoom-group .icon-button {
+  border-radius: 0;
+  color: var(--color-text);
+}
+
+.zoom-group .icon-button + .icon-button {
   border-top: 1px solid var(--color-border);
 }
 
-.old-provinces-title {
-  margin: 0 0 4px;
-  font-size: 12px;
-  color: var(--color-text-muted);
+.fab {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 44px;
+  padding: 0 var(--space-5);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--color-accent);
+  box-shadow: var(--shadow-md);
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--color-on-accent);
+  cursor: pointer;
 }
 
-.old-provinces-list {
-  margin: 0;
-  padding-left: 18px;
+.fab:hover {
+  background: var(--color-accent-hover);
+}
+
+.fab.is-active {
+  background: var(--color-text);
+}
+
+/* Dải hướng dẫn khi đang đặt ghim. Dải nằm giữa phần bản đồ không bị khung nổi che. */
+.placing-banner {
+  position: absolute;
+  z-index: 900;
+  top: var(--overlay-gap);
+  left: calc(var(--panel-width) + 2 * var(--overlay-gap) + (100% - var(--panel-width) - 2 * var(--overlay-gap)) / 2);
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-pill);
+  background: var(--color-text);
+  box-shadow: var(--shadow-md);
+  font-size: var(--text-md);
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+.save-error {
+  position: absolute;
+  z-index: 900;
+  top: calc(var(--overlay-gap) + 44px);
+  right: var(--overlay-gap);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-danger-border);
+  border-radius: var(--radius);
+  background: var(--color-danger-soft);
+  box-shadow: var(--shadow-sm);
+  font-size: var(--text-md);
+  color: var(--color-danger);
 }
 
 .toast {
   position: absolute;
-  left: 50%;
-  bottom: 24px;
+  z-index: 1100;
+  left: calc(var(--panel-width) + 2 * var(--overlay-gap) + (100% - var(--panel-width) - 2 * var(--overlay-gap)) / 2);
+  bottom: var(--space-6);
   transform: translateX(-50%);
-  z-index: 1000;
   display: flex;
   align-items: center;
-  gap: 12px;
-  max-width: calc(100% - 32px);
-  padding: 10px 14px;
+  gap: var(--space-3);
+  max-width: 480px;
+  padding: 10px var(--space-2) 10px var(--space-4);
   border-radius: var(--radius);
-  background: #1f2328;
-  color: #fff;
-  font-size: 14px;
+  background: var(--color-text);
+  box-shadow: var(--shadow-lg);
+  font-size: var(--text-base);
+  color: #ffffff;
 }
 
 .toast-action {
-  font: inherit;
-  font-weight: 600;
-  padding: 2px 6px;
+  height: 30px;
+  padding: 0 var(--space-3);
   border: 0;
+  border-radius: var(--radius-sm);
   background: transparent;
+  font-weight: 600;
   color: #9ec5ff;
   cursor: pointer;
+}
+
+.toast-action:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Menu chuột phải */
+.context-menu {
+  position: absolute;
+  z-index: 1200;
+  min-width: 220px;
+  padding: var(--space-1);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-lg);
+  font-size: var(--text-base);
+}
+
+.context-menu-title {
+  padding: 6px 10px 4px;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.context-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  height: 34px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  text-align: left;
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.context-menu-item:hover,
+.context-menu-item:focus-visible {
+  background: var(--color-surface-sunken);
+  outline: none;
+}
+
+.context-menu-item.is-danger {
+  color: var(--color-danger);
+}
+
+.context-menu-item svg {
+  flex: 0 0 auto;
+  color: var(--color-text-muted);
+}
+
+.context-menu-item.is-danger svg {
+  color: var(--color-danger);
+}
+
+.context-menu-check {
+  margin-left: auto;
+  color: var(--color-accent);
+}
+
+.context-menu-divider {
+  height: 1px;
+  margin: var(--space-1) 0;
+  background: var(--color-border);
+}
+
+/* =========================================================================
+   Bên trong bản đồ MapLibre
+   ========================================================================= */
+.maplibregl-map {
+  font-family: var(--font-sans);
+}
+
+.maplibregl-ctrl-attrib {
+  font-size: var(--text-xs);
+}
+
+/* Ghim của người dùng là nút bấm đặt lên bản đồ. */
+.map-pin {
+  display: block;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  line-height: 0;
+  cursor: pointer;
+}
+
+.map-pin > svg {
+  transform-origin: 50% 100%;
+  transition: transform 0.12s ease-out;
+}
+
+.map-pin:hover > svg {
+  transform: scale(1.1);
+}
+
+/*
+ * Ghim là biểu tượng đặt giữa vị trí. Viền trắng và bóng nhẹ giúp biểu tượng nổi trên nền bản đồ.
+ * MapLibre đã đặt ghim ở position: absolute, nên vòng chọn bên dưới bám theo khung của ghim.
+ */
+.map-pin.is-icon > svg {
+  transform-origin: 50% 50%;
+  filter: drop-shadow(0 0 1px #fff) drop-shadow(0 0 1px #fff) drop-shadow(0 1px 1.5px rgba(0, 0, 0, 0.35));
+}
+
+/* Ghim quê nhà nằm trên các ghim khác. */
+.map-pin.is-hometown {
+  z-index: 1;
+}
+
+/* Ghim đang chọn to hơn, có vòng xanh bao quanh và nổi lên trên các ghim khác. */
+.map-pin.is-selected {
+  z-index: 2;
+}
+
+.map-pin.is-selected > svg {
+  transform: scale(1.15);
+}
+
+.map-pin.is-selected::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border: 3px solid var(--color-accent);
+  border-radius: var(--radius-pill);
+  background: rgba(37, 99, 235, 0.12);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.9);
+  pointer-events: none;
+  /* Vòng nằm dưới biểu tượng. Ghim đang chọn có z-index riêng, nên vòng không lọt xuống dưới bản đồ. */
+  z-index: -1;
+}
+
+.map-pin.is-draft {
+  z-index: 3;
+  cursor: default;
+}
+
+.map-pin.is-draft > svg {
+  transform: scale(1.25);
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.35));
+}
+
+/* Vòng xanh khoanh địa điểm của bản đồ nền đang được chọn. */
+.map-poi-ring {
+  width: 26px;
+  height: 26px;
+  border: 3px solid var(--color-accent);
+  border-radius: var(--radius-pill);
+  background: rgba(37, 99, 235, 0.12);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.9);
+  pointer-events: none;
+}
+
+/* =========================================================================
+   Tab "Loài" và trang loài (xem docs/SPECIES-RANGE.md)
+   ========================================================================= */
+.species-form {
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4) 0;
+}
+
+.species-form .input {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.species-form .button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 auto;
+}
+
+.species-note {
+  margin: var(--space-3) var(--space-4) var(--space-4);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+/* Ảnh nhỏ của loài trong danh sách, cùng cỡ với biểu tượng của ghim. */
+.list-item-thumb {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+  background: var(--color-surface-sunken);
+}
+
+/* Nhãn mức Sách đỏ, màu đi từ xanh (ít quan tâm) đến đỏ (cực kỳ nguy cấp). */
+.iucn-badge {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  padding: 1px 8px;
+  border-radius: var(--radius-pill);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  line-height: 18px;
+  white-space: nowrap;
+  background: var(--color-surface-sunken);
+  color: var(--color-text-secondary);
+}
+
+.iucn-badge.is-lc {
+  background: #e3f3e9;
+  color: #1f5c3b;
+}
+
+.iucn-badge.is-nt {
+  background: #f4f6d8;
+  color: #5b6114;
+}
+
+.iucn-badge.is-vu {
+  background: #fdf0dc;
+  color: #7a4d0c;
+}
+
+.iucn-badge.is-en {
+  background: #fde4d8;
+  color: #9a3412;
+}
+
+.iucn-badge.is-cr {
+  background: #fde2e1;
+  color: #a61b1b;
+}
+
+.iucn-badge.is-ew,
+.iucn-badge.is-ex {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+/* Ảnh loài và dòng ghi công tác giả, giấy phép. */
+.species-photo {
+  margin: 0;
+}
+
+.photo-credit {
+  margin: 0;
+  padding: 4px var(--space-4) 0;
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  overflow-wrap: anywhere;
+}
+
+/* Hai nút bật tắt lớp của loài trên bản đồ. */
+.layer-toggles {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: var(--space-2);
+}
+
+.layer-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: 6px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  font-size: var(--text-base);
+  color: var(--color-text);
+  text-align: left;
+  cursor: pointer;
+}
+
+.layer-toggle:hover:not(:disabled) {
+  border-color: var(--color-border-strong);
+}
+
+.layer-toggle.is-off {
+  background: var(--color-surface-subtle);
+  color: var(--color-text-muted);
+}
+
+.layer-toggle:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.layer-toggle-label {
+  flex: 1 1 auto;
+}
+
+/* Mẫu màu của từng lớp: vùng phân bố màu hồng như ô của iNaturalist, nơi đã gặp là ô lục giác vàng cam như ô của GBIF. */
+.layer-swatch {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+  border-radius: 4px;
+}
+
+.layer-swatch.is-range {
+  border: 1.5px solid #ec4899;
+  background: rgba(236, 72, 153, 0.35);
+}
+
+.layer-swatch.is-obs {
+  border-radius: 0;
+  background: linear-gradient(135deg, #ffe066, #f08c00);
+  clip-path: polygon(25% 5%, 75% 5%, 100% 50%, 75% 95%, 25% 95%, 0 50%);
+}
+
+.layer-toggle.is-off .layer-swatch {
+  opacity: 0.4;
+}
+
+.range-map {
+  display: block;
+  width: 100%;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-subtle);
+}
+
+/* Nút loài ở góc phải. Tên loài và dấu × là hai nút riêng. */
+.species-chip {
+  gap: 0;
+  padding: 0;
+}
+
+.species-chip button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 100%;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.species-chip-name {
+  padding: 0 6px 0 var(--space-3);
+}
+
+.species-chip-clear {
+  padding: 0 var(--space-3) 0 4px;
 }

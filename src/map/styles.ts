@@ -1,6 +1,6 @@
-import type { PathOptions } from 'leaflet';
-import type { MarkStatus } from '../domain/types';
+import type { PlaceCategory } from '../domain/types';
 
+/** Màu dùng trên bản đồ. Phải khớp với các biến màu trong src/styles/tokens.css. */
 export const COLORS = {
   accent: '#2563eb',
   unmarkedStroke: '#8a8f98',
@@ -9,42 +9,28 @@ export const COLORS = {
   wishlist: '#f0a33a',
   wishlistStroke: '#b87717',
   oldBorder: '#6b7280',
+  islandLabel: '#1e3a5f',
+  /** Ghim chưa có loại. */
+  uncategorized: '#495057',
+  /** Nền tròn của ghim quê nhà. */
+  hometown: '#e03131',
 } as const;
 
-const STATUS_FILL_OPACITY = 0.55;
-const HOVER_EXTRA_OPACITY = 0.15;
-
 /**
- * Kiểu vẽ của một vùng theo trạng thái đánh dấu, đang rê chuột hay đang chọn.
- * Vùng chưa đánh dấu có nền trong suốt nhưng vẫn bấm được, vì Leaflet dùng hình học để xác định vùng được bấm.
+ * Màu của ghim trên bản đồ theo loại ghim. Mỗi loại có một sắc màu riêng để nhìn là phân biệt được.
+ * Các màu đủ đậm để đọc được trên nền bản đồ sáng.
  */
-export function regionStyle(
-  status: MarkStatus | undefined,
-  state: { hover?: boolean; selected?: boolean } = {},
-): PathOptions {
-  const base: PathOptions =
-    status === 'visited'
-      ? { fillColor: COLORS.visited, fillOpacity: STATUS_FILL_OPACITY, color: COLORS.visitedStroke }
-      : status === 'wishlist'
-        ? { fillColor: COLORS.wishlist, fillOpacity: STATUS_FILL_OPACITY, color: COLORS.wishlistStroke }
-        : { fillColor: COLORS.accent, fillOpacity: 0, color: COLORS.unmarkedStroke };
-  const style: PathOptions = { ...base, weight: 0.8, opacity: 1 };
-  if (state.hover) {
-    style.color = COLORS.accent;
-    style.weight = 2;
-    style.fillOpacity = Math.round(((base.fillOpacity ?? 0) + HOVER_EXTRA_OPACITY) * 100) / 100;
-  }
-  if (state.selected) {
-    style.color = COLORS.accent;
-    style.weight = 2.5;
-  }
-  return style;
-}
-
-export const OLD_BORDER_STYLE: PathOptions = {
-  color: COLORS.oldBorder,
-  weight: 1,
-  opacity: 0.6,
-  dashArray: '4 4',
-  interactive: false,
+export const CATEGORY_COLORS: Record<PlaceCategory, string> = {
+  heritage: '#c92a2a',
+  food: '#f76707',
+  cafe: '#8b5a2b',
+  fun: '#e0a100',
+  park: '#74b816',
+  nature: '#2f9e44',
+  sightseeing: '#0c8599',
+  beach: '#1c7ed6',
+  museum: '#4c6ef5',
+  shopping: '#7048e8',
+  religion: '#ae3ec9',
+  stay: '#d6336c',
 };

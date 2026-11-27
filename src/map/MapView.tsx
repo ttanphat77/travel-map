@@ -1,122 +1,96 @@
-import { useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
-import 'leaflet/dist/leaflet.css';
-import type { LocateResult } from '../domain/locate';
-import type { PlaceFields } from '../domain/store';
-import type { MarkStatus, UserData } from '../domain/types';
+import { useMemo, useRef } from 'react';
+import type { ActiveSpecies } from '../domain/species';
+import type { MarkStatus, PlaceCategory, UserData } from '../domain/types';
 import { summarizeVietnam } from '../domain/vietnam';
-import PlaceDetail from '../ui/PlaceDetail';
-import PlaceForm from '../ui/PlaceForm';
-import RegionDetail, { type MarkActions } from '../ui/RegionDetail';
 import type { MapData } from './mapData';
-import { useLeafletMap, type MapControls, type MapStatuses, type Selection } from './useLeafletMap';
+import {
+  useMap,
+  type ContextMenuRequest,
+  type MapControls,
+  type MapStatuses,
+  type Selection,
+} from './useMap';
 
-export interface PlaceActions {
-  /** Trả về id của ghim mới. */
-  addPlace: (fields: PlaceFields) => string;
-  updatePlace: (id: string, fields: PlaceFields) => void;
-  deletePlace: (id: string) => void;
+/** Loại nào được hiện trên bản đồ. Bộ lọc chỉ đổi cách hiện, không đổi dữ liệu. */
+export interface MapFilters {
+  visited: boolean;
+  wishlist: boolean;
+  places: boolean;
 }
 
 interface Props {
   data: MapData;
   userData: UserData;
-  actions: MarkActions & PlaceActions;
+  filters: MapFilters;
+  /** Chỉ hiện ghim thuộc loại này. Null là hiện mọi ghim. */
+  categoryFilter: PlaceCategory | null;
+  selection: Selection | null;
   placing: boolean;
+  onSelect: (selection: Selection | null) => void;
   onPlace: (lat: number, lng: number) => void;
+  onContextMenu: (request: ContextMenuRequest) => void;
+  onMapMove: () => void;
+  /** Loài đang hiện trên bản đồ. Null là không hiện loài nào. */
+  species: ActiveSpecies | null;
   controls: React.RefObject<MapControls | null>;
-  locate: (lat: number, lng: number) => LocateResult;
-  countryName: (id: string) => string | undefined;
 }
 
-const statusTable = (marks: UserData['countries']): Record<string, MarkStatus> =>
-  Object.fromEntries(Object.entries(marks).map(([key, mark]) => [key, mark.status]));
+/** Bảng trạng thái của các vùng, chỉ giữ những trạng thái đang được bật trong bộ lọc. */
+const statusTable = (marks: UserData['countries'], shown: (status: MarkStatus) => boolean): Record<string, MarkStatus> =>
+  Object.fromEntries(Object.entries(marks).flatMap(([key, mark]) => (shown(mark.status) ? [[key, mark.status]] : [])));
 
-export default function MapView({ data, userData, actions, placing, onPlace, controls, locate, countryName }: Props) {
+/** Khung bản đồ. Mọi thông tin và thao tác của vùng hoặc ghim đang chọn nằm ở khung bên trái. */
+export default function MapView({
+  data,
+  userData,
+  filters,
+  categoryFilter,
+  selection,
+  placing,
+  onSelect,
+  onPlace,
+  onContextMenu,
+  onMapMove,
+  species,
+  controls,
+}: Props) {
   const container = useRef<HTMLDivElement>(null);
-  const popupElement = useMemo(() => document.createElement('div'), []);
-  const [selection, setSelection] = useState<Selection | null>(null);
 
-  const statuses = useMemo<MapStatuses>(
-    () => ({
-      countries: statusTable(userData.countries),
-      provinces: statusTable(userData.provinces),
-      vietnam: summarizeVietnam(userData.provinces).status,
-    }),
-    [userData.countries, userData.provinces],
+  const statuses = useMemo<MapStatuses>(() => {
+    const shown = (status: MarkStatus) => filters[status];
+    const provinces = Object.fromEntries(Object.entries(userData.provinces).filter(([, mark]) => shown(mark.status)));
+    return {
+      countries: statusTable(userData.countries, shown),
+      provinces: statusTable(userData.provinces, shown),
+      vietnam: summarizeVietnam(provinces).status,
+    };
+  }, [userData.countries, userData.provinces, filters]);
+
+  const places = useMemo(
+    () =>
+      filters.places
+        ? userData.places.filter((place) => filters[place.status] && (categoryFilter === null || place.category === categoryFilter))
+        : [],
+    [userData.places, filters, categoryFilter],
   );
 
-  useLeafletMap(container, data, {
-    popupElement,
+  useMap(container, data, {
     statuses,
-    places: userData.places,
+    places,
+    selection,
     placing,
-    onSelect: setSelection,
+    onSelect,
     onPlace,
+    onContextMenu,
+    onMapMove,
+    species,
     controls,
   });
 
-  // Nội dung popup đổi chiều cao khi hiện thêm ô nhập, nên popup phải tính lại vị trí.
-  useLayoutEffect(() => {
-    controls.current?.updatePopup();
-  }, [controls, selection, userData]);
-
-  const renderPopup = (current: Selection) => {
-    if (current.kind === 'place') {
-      const place = userData.places.find((p) => p.id === current.id);
-      if (!place) return null;
-      return (
-        <PlaceDetail
-          place={place}
-          location={locate(place.lat, place.lng)}
-          countryName={countryName}
-          onEdit={() => controls.current?.openAt(place.lat, place.lng, { kind: 'placeForm', mode: 'edit', id: place.id })}
-          onDelete={() => {
-            controls.current?.closePopup();
-            actions.deletePlace(place.id);
-          }}
-        />
-      );
-    }
-    if (current.kind === 'placeForm') {
-      const editing = current.mode === 'edit' ? userData.places.find((p) => p.id === current.id) : undefined;
-      if (current.mode === 'edit' && !editing) return null;
-      const initial: PlaceFields = editing
-        ? { name: editing.name, lat: editing.lat, lng: editing.lng, status: editing.status, date: editing.date, note: editing.note }
-        : current.mode === 'new'
-          ? { name: current.name ?? '', lat: current.lat, lng: current.lng, status: 'visited' }
-          : { name: '', lat: 0, lng: 0, status: 'visited' };
-      return (
-        <PlaceForm
-          key={editing ? `edit-${editing.id}` : `new-${initial.lat},${initial.lng}`}
-          title={editing ? 'Sửa địa điểm' : 'Thêm địa điểm'}
-          initial={initial}
-          onCancel={() => controls.current?.closePopup()}
-          onSave={(fields) => {
-            const id = editing ? editing.id : actions.addPlace(fields);
-            if (editing) actions.updatePlace(editing.id, fields);
-            controls.current?.openAt(fields.lat, fields.lng, { kind: 'place', id });
-          }}
-        />
-      );
-    }
-    return (
-      <RegionDetail
-        selection={current}
-        userData={userData}
-        actions={actions}
-        onZoomToVietnam={() => controls.current?.zoomToVietnam()}
-      />
-    );
-  };
-
   return (
-    <>
-      {/* Class của chế độ đặt ghim nằm ở khung bọc. Nếu đặt trên khung bản đồ, React sẽ xóa các class Leaflet tự thêm vào. */}
-      <div className={`map-shell${placing ? ' is-placing' : ''}`}>
-        <div ref={container} className="map-view" aria-label="Bản đồ" />
-      </div>
-      {selection && createPortal(renderPopup(selection), popupElement)}
-    </>
+    // Class của chế độ đặt ghim nằm ở khung bọc. Nếu đặt trên khung bản đồ, React sẽ xóa các class MapLibre tự thêm vào.
+    <div className={`map-shell${placing ? ' is-placing' : ''}`}>
+      <div ref={container} className="map-view" aria-label="Bản đồ" />
+    </div>
   );
 }

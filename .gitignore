@@ -1,6 +1,10 @@
 # Gói cài đặt và file build
 node_modules/
 dist/
+.next/
+next-env.d.ts
+# File worker của MapLibre, được chép từ node_modules trước mỗi lần dev và build
+/public/maplibre/
 
 # Dữ liệu nguồn đã tải về bởi script dữ liệu (tải lại được bằng "npm run data")
 scripts/data/.cache/

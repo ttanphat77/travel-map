@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { userReducer } from './store';
-import { emptyUserData, NOTE_MAX_LENGTH, type UserData } from './types';
+import { emptyUserData, NOTE_MAX_LENGTH, type PlaceCategory, type UserData } from './types';
 
 const T1 = '2026-11-20T01:00:00.000Z';
 const T2 = '2026-11-20T02:00:00.000Z';
@@ -100,6 +100,40 @@ describe('userReducer', () => {
     });
   });
 
+  it('giữ loại ghim hợp lệ và bỏ loại không hợp lệ', () => {
+    const s = userReducer(emptyUserData(), {
+      type: 'addPlace',
+      id: 'a',
+      fields: { name: 'A', lat: 0, lng: 0, status: 'visited', category: 'cafe' },
+      now: T1,
+    });
+    expect(s.places[0]?.category).toBe('cafe');
+    const wrong = userReducer(s, {
+      type: 'updatePlace',
+      id: 'a',
+      fields: { name: 'A', lat: 0, lng: 0, status: 'visited', category: 'karaoke' as PlaceCategory },
+      now: T2,
+    });
+    expect(wrong.places[0]).not.toHaveProperty('category');
+  });
+
+  it('lưu vùng đã tra của ghim, giữ vùng khi sửa ghim tại chỗ và bỏ vùng khi ghim đổi tọa độ', () => {
+    const fields = { name: 'A', lat: 20.9, lng: 107.07, status: 'visited' as const };
+    let s = userReducer(emptyUserData(), { type: 'addPlace', id: 'a', fields, now: T1 });
+    expect(s.places[0]).not.toHaveProperty('region');
+    s = userReducer(s, { type: 'setPlaceRegion', id: 'a', lat: 20.9, lng: 107.07, region: { countryId: 'VNM', provinceCode: '22' } });
+    expect(s.places[0]?.region).toEqual({ countryId: 'VNM', provinceCode: '22' });
+    s = userReducer(s, { type: 'updatePlace', id: 'a', fields: { ...fields, name: 'B' }, now: T2 });
+    expect(s.places[0]?.region).toEqual({ countryId: 'VNM', provinceCode: '22' });
+    s = userReducer(s, { type: 'updatePlace', id: 'a', fields: { ...fields, lat: 10 }, now: T2 });
+    expect(s.places[0]).not.toHaveProperty('region');
+  });
+
+  it('bỏ qua vùng tra được cho tọa độ cũ của ghim', () => {
+    const s = userReducer(emptyUserData(), { type: 'addPlace', id: 'a', fields: { name: 'A', lat: 1, lng: 2, status: 'visited' }, now: T1 });
+    expect(userReducer(s, { type: 'setPlaceRegion', id: 'a', lat: 5, lng: 2, region: { countryId: 'VNM' } })).toBe(s);
+  });
+
   it('không thêm ghim có tên rỗng', () => {
     const before = emptyUserData();
     const s = userReducer(before, { type: 'addPlace', id: 'a', fields: { name: '   ', lat: 0, lng: 0, status: 'visited' }, now: T1 });
@@ -132,6 +166,31 @@ describe('userReducer', () => {
     expect(deleted.places.map((p) => p.id)).toEqual(['a', 'c']);
     const restored = userReducer(deleted, { type: 'restorePlace', place: removed, index: 1 });
     expect(restored.places.map((p) => p.id)).toEqual(['a', 'b', 'c']);
+  });
+
+  it('chỉ giữ một ghim quê nhà', () => {
+    const add = (s: UserData, id: string, hometown?: boolean) =>
+      userReducer(s, { type: 'addPlace', id, fields: { name: id, lat: 0, lng: 0, status: 'visited', hometown }, now: T1 });
+    const hometowns = (s: UserData) => s.places.filter((p) => p.hometown).map((p) => p.id);
+    let s = add(add(emptyUserData(), 'a', true), 'b');
+    expect(hometowns(s)).toEqual(['a']);
+    // Ghim không phải quê nhà thì không có trường hometown.
+    expect(s.places.find((p) => p.id === 'b')).not.toHaveProperty('hometown');
+    s = add(s, 'c', true);
+    expect(hometowns(s)).toEqual(['c']);
+    s = userReducer(s, { type: 'updatePlace', id: 'b', fields: { name: 'b', lat: 0, lng: 0, status: 'visited', hometown: true }, now: T2 });
+    expect(hometowns(s)).toEqual(['b']);
+    s = userReducer(s, { type: 'updatePlace', id: 'b', fields: { name: 'b', lat: 0, lng: 0, status: 'visited', hometown: false }, now: T2 });
+    expect(hometowns(s)).toEqual([]);
+  });
+
+  it('hoàn tác xóa ghim quê nhà không làm mất quê nhà mới chọn', () => {
+    let s = userReducer(emptyUserData(), { type: 'addPlace', id: 'a', fields: { name: 'a', lat: 0, lng: 0, status: 'visited', hometown: true }, now: T1 });
+    const removed = s.places[0]!;
+    s = userReducer(s, { type: 'deletePlace', id: 'a' });
+    s = userReducer(s, { type: 'addPlace', id: 'b', fields: { name: 'b', lat: 0, lng: 0, status: 'visited', hometown: true }, now: T2 });
+    s = userReducer(s, { type: 'restorePlace', place: removed, index: 1 });
+    expect(s.places.filter((p) => p.hometown).map((p) => p.id)).toEqual(['b']);
   });
 
   it('không làm thay đổi state cũ', () => {

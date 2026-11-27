@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { MIN_INTERVAL_MS, SearchError, buildSearchUrl, createSearcher } from './nominatim';
+import { MIN_INTERVAL_MS, SearchError, buildSearchUrl, createSearcher, searchGroup } from './nominatim';
 
 function fakeDeps(responses: Record<string, unknown> = {}) {
   let clock = 0;
@@ -24,7 +24,9 @@ function fakeDeps(responses: Record<string, unknown> = {}) {
   };
 }
 
-const HOI_AN = [{ name: 'Hội An', display_name: 'Hội An, Đà Nẵng, Việt Nam', lat: '15.88', lon: '108.33' }];
+const HOI_AN = [
+  { name: 'Hội An', display_name: 'Hội An, Đà Nẵng, Việt Nam', lat: '15.88', lon: '108.33', category: 'place', type: 'city' },
+];
 
 describe('buildSearchUrl', () => {
   it('có q, jsonv2, limit 5 và accept-language=vi', () => {
@@ -42,8 +44,17 @@ describe('createSearcher', () => {
     const { deps } = fakeDeps({ 'Hội An': HOI_AN });
     const search = createSearcher(deps);
     expect(await search('Hội An')).toEqual([
-      { name: 'Hội An', displayName: 'Hội An, Đà Nẵng, Việt Nam', lat: 15.88, lng: 108.33 },
+      { name: 'Hội An', displayName: 'Hội An, Đà Nẵng, Việt Nam', lat: 15.88, lng: 108.33, group: 'place', type: 'city', poiClass: 'place' },
     ]);
+  });
+
+  it('xếp kết quả vào nhóm địa danh lớn, mặt nước hoặc địa điểm nhỏ', () => {
+    expect(searchGroup('place', 'city')).toBe('place');
+    expect(searchGroup('boundary', 'administrative')).toBe('place');
+    expect(searchGroup('natural', 'water')).toBe('water_name');
+    expect(searchGroup('natural', 'peak')).toBe('poi');
+    expect(searchGroup('amenity', 'restaurant')).toBe('poi');
+    expect(searchGroup('', '')).toBe('poi');
   });
 
   it('hai yêu cầu liên tiếp cách nhau ít nhất 1 giây', async () => {

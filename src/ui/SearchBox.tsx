@@ -1,3 +1,4 @@
+import { Search } from 'lucide-react';
 import { useId, useMemo, useRef, useState } from 'react';
 import { createSearcher, isAbort, SearchError, type SearchResult } from '../services/nominatim';
 
@@ -36,19 +37,22 @@ export default function SearchBox({ onPick }: Props) {
 
   return (
     <form className="search-box" role="search" onSubmit={submit}>
-      <input
-        ref={inputRef}
-        className="search-input"
-        type="search"
-        placeholder="Tìm địa điểm, ví dụ Hội An"
-        aria-label="Tìm địa điểm"
-        aria-controls={listId}
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === 'Escape') close();
-        }}
-      />
+      <label className="search-field">
+        <Search size={16} aria-hidden="true" />
+        <input
+          ref={inputRef}
+          className="search-input"
+          type="search"
+          placeholder="Tìm địa điểm, ví dụ Hội An"
+          aria-label="Tìm địa điểm"
+          aria-controls={listId}
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Escape') close();
+          }}
+        />
+      </label>
       {state.status !== 'idle' && (
         <div className="search-panel" id={listId}>
           {state.status === 'loading' && <p className="search-message">Đang tìm…</p>}
